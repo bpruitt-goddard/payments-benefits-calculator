@@ -22,18 +22,18 @@ public class EmployeesController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<ApiResponse<GetEmployeeDto>>> Get(int id)
     {
-        var employee = _context.Employees
+        var employees = _context.Employees
             .Include(e => e.Dependents)
             .FirstOrDefault(employee => employee.Id == id);
 
-        if (employee is null)
+        if (employees is null)
         {
             return NotFound();
         }
 
         return new ApiResponse<GetEmployeeDto>
         {
-            Data = new GetEmployeeDto(employee),
+            Data = new GetEmployeeDto(employees),
             Success = true
         };
     }
