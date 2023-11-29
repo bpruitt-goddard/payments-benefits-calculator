@@ -22,17 +22,13 @@ public class DependentsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<ApiResponse<GetDependentDto>>> Get(int id)
     {
-        var employeeWithDependent = _context.Employees
-            .Include(e => e.Dependents)
-            .FirstOrDefault(e => e.Dependents.Any(d => d.Id == id));
-
-        if (employeeWithDependent is null)
+        var dependent = _context.Dependents
+            .FirstOrDefault(d => d.Id == id);
+            
+        if (dependent is null)
         {
             return NotFound();
         }
-
-        var dependent = employeeWithDependent.Dependents
-            .Single(d => d.Id == id);
 
         return new ApiResponse<GetDependentDto>
         {
@@ -45,9 +41,7 @@ public class DependentsController : ControllerBase
     [HttpGet("")]
     public async Task<ActionResult<ApiResponse<List<GetDependentDto>>>> GetAll()
     {
-        var dependents = _context.Employees
-            .Include(e => e.Dependents)
-            .SelectMany(e => e.Dependents)
+        var dependents = _context.Dependents
             .Select(d => new GetDependentDto(d))
             .ToList();
 
