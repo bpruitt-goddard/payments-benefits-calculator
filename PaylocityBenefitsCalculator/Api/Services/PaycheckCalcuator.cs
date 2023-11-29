@@ -9,6 +9,8 @@ public static class PaycheckCalculator
 	private const int PaychecksPerYear = 26;
 	private const decimal YearlyBenefitsBaseCost = 12_000m;
 	private const decimal YearlyDependentCost = 7_200m;
+	private const decimal HighSalaryMinimumExclusive = 80_000m;
+	private const decimal HighSalaryPercentageCost = .02m;
 
 	// Return a years worth of paychecks
 	public static List<Paycheck> GetPaychecks(Employee employee)
@@ -16,6 +18,13 @@ public static class PaycheckCalculator
 		// calculate total deductions
 		var deductions = YearlyBenefitsBaseCost;
 		deductions += employee.Dependents.Count * YearlyDependentCost;
+
+		if (employee.Salary > HighSalaryMinimumExclusive)
+		{
+			var deductionPercentage = employee.Salary * HighSalaryPercentageCost;
+			// Round calculation to avoid fractional cents
+			deductions += Math.Round(deductionPercentage, 2);
+		}
 
 		Console.WriteLine($"deductions {deductions}");
 
