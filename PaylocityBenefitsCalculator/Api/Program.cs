@@ -1,3 +1,5 @@
+using Api.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +19,10 @@ builder.Services.AddSwaggerGen(c =>
         Description = "Api to support employee benefit cost calculations"
     });
 });
+
+// Wire up database
+// Use in-memory for simplicity, but will be replaced with real database on non-local
+builder.Services.AddDbContext<EmployeeDbContext>(options => options.UseInMemoryDatabase("InMemoryDb"));
 
 var allowLocalhost = "allow localhost";
 builder.Services.AddCors(options =>

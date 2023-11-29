@@ -23,3 +23,8 @@ problem. We’re looking to see your skills in all three tiers so the solution c
 to show our teams your abilities across the board.
 
 Requirements will be given separately.
+
+# Decisions
+
+## Pulling Employee Data Into Database
+The seed project started with the data hard-coded in the employee controller. This was pulled out into an in-memory database for now to make it reusable across APIs/controllers. It could easily be extracted into a persistent database from this point.
