@@ -1,6 +1,4 @@
 using Api.Models;
-using Microsoft.EntityFrameworkCore;
-using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace Api.Services;
 
@@ -11,6 +9,9 @@ public static class PaycheckCalculator
 	private const decimal YearlyDependentCost = 7_200m;
 	private const decimal HighSalaryMinimumExclusive = 80_000m;
 	private const decimal HighSalaryPercentageCost = .02m;
+	// how are you still playing basketball?
+	private const int OldAgeMinimumYearsExclusive = 50;
+	private const decimal YearlyOldAgeCost = 2_400m;
 
 	// Return a years worth of paychecks
 	public static List<Paycheck> GetPaychecks(Employee employee)
@@ -26,7 +27,13 @@ public static class PaycheckCalculator
 			deductions += Math.Round(deductionPercentage, 2);
 		}
 
-		Console.WriteLine($"deductions {deductions}");
+		// Re-calculate on each call of method to ensure
+		// we don't miss folks that just passed threshold
+		var oldAgeDateOfBirth = DateTime.UtcNow.AddYears(-OldAgeMinimumYearsExclusive);
+		if (employee.DateOfBirth < oldAgeDateOfBirth)
+		{
+			deductions += YearlyOldAgeCost;
+		}
 
 		var yearlyTotal = employee.Salary - deductions;
 		return SplitEvenly(yearlyTotal);

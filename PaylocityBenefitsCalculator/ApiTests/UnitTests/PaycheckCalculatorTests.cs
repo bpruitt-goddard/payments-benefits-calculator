@@ -78,4 +78,21 @@ public class PaycheckCalculatorTests
 		Assert.Equal(2554.01m, paychecks.Last().Amount);
 		Assert.Equal(66_400.01m, paychecks.Sum(p => p.Amount));
 	}
+
+	[Fact]
+	public void EmployeeWithOldAge_ReturnsPaychecksWithExtraDeduction()
+	{
+		var employee = new Employee
+		{
+			Salary = 50_000.00m,
+			DateOfBirth = DateTime.UtcNow.AddYears(-51),
+		};
+
+		var paychecks = PaycheckCalculator.GetPaychecks(employee);
+
+		Assert.Equal(26, paychecks.Count);
+		Assert.All(paychecks.Take(25), paycheck => Assert.Equal(1369.23m, paycheck.Amount));
+		Assert.Equal(1369.25m, paychecks.Last().Amount);
+		Assert.Equal(35_600m, paychecks.Sum(p => p.Amount));
+	}
 }
