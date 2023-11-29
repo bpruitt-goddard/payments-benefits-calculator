@@ -13,7 +13,17 @@ public class IntegrationTest : IDisposable
         {
             if (_httpClient == default)
             {
-                _httpClient = new HttpClient
+                // temporary solution: skip ssl validation
+                // this gets tests running but is not a long term solution
+                var handler = new HttpClientHandler();
+                handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+                handler.ServerCertificateCustomValidationCallback = 
+                    (httpRequestMessage, cert, cetChain, policyErrors) =>
+                {
+                    return true;
+                };
+
+                _httpClient = new HttpClient(handler)
                 {
                     //task: update your port if necessary
                     BaseAddress = new Uri("https://localhost:7124")
