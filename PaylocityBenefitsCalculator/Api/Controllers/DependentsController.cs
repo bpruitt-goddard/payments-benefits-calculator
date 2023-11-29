@@ -22,7 +22,23 @@ public class DependentsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<ApiResponse<GetDependentDto>>> Get(int id)
     {
-        throw new NotImplementedException();
+        var employeeWithDependent = _context.Employees
+            .Include(e => e.Dependents)
+            .FirstOrDefault(e => e.Dependents.Any(d => d.Id == id));
+
+        if (employeeWithDependent is null)
+        {
+            return NotFound();
+        }
+
+        var dependent = employeeWithDependent.Dependents
+            .Single(d => d.Id == id);
+
+        return new ApiResponse<GetDependentDto>
+        {
+            Data = new GetDependentDto(dependent),
+            Success = true
+        };
     }
 
     [SwaggerOperation(Summary = "Get all dependents")]
