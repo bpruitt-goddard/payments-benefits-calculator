@@ -1,6 +1,8 @@
 ﻿using Api.Data;
 using Api.Dtos.Employee;
+using Api.Dtos.Paycheck;
 using Api.Models;
+using Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
@@ -56,5 +58,29 @@ public class EmployeesController : ControllerBase
         };
 
         return result;
+    }
+
+    [SwaggerOperation(Summary = "Get paychecks for the year by employee id")]
+    [HttpGet("{id}/paychecks")]
+    public async Task<ActionResult<ApiResponse<List<GetPaycheckDto>>>> GetPaychecksByEmployee(int id)
+    {
+        var employee = _context.Employees
+            .Include(e => e.Dependents)
+            .FirstOrDefault(employee => employee.Id == id);
+
+        if (employee is null)
+        {
+            return NotFound();
+        }
+
+        var paychecks = PaycheckCalculator.GetPaychecks(employee)
+            .Select(p => new GetPaycheckDto(p))
+            .ToList();
+
+        return new ApiResponse<List<GetPaycheckDto>>
+        {
+            Data = paychecks,
+            Success = true
+        };
     }
 }

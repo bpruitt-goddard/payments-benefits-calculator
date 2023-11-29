@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Api.Dtos.Dependent;
 using Api.Dtos.Employee;
+using Api.Dtos.Paycheck;
 using Api.Models;
 using Xunit;
 
@@ -84,7 +86,6 @@ public class EmployeeIntegrationTests : IntegrationTest
     }
 
     [Fact]
-    //task: make test pass
     public async Task WhenAskedForAnEmployee_ShouldReturnCorrectEmployee()
     {
         var response = await HttpClient.GetAsync("/api/v1/employees/1");
@@ -100,10 +101,27 @@ public class EmployeeIntegrationTests : IntegrationTest
     }
     
     [Fact]
-    //task: make test pass
     public async Task WhenAskedForANonexistentEmployee_ShouldReturn404()
     {
         var response = await HttpClient.GetAsync($"/api/v1/employees/{int.MinValue}");
+        await response.ShouldReturn(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task WhenAskedForANonExistentEmployeesPaychecks_ShouldReturnCorrectPaychecks()
+    {
+        var response = await HttpClient.GetAsync($"/api/v1/employees/1/paychecks");
+        var paychecks = Enumerable.Range(0, 25).Select(_ => 2439.26m)
+			.Concat(new List<decimal> { 2439.49m })
+            .Select(x => new GetPaycheckDto { Amount = x });
+        await response.ShouldReturn(HttpStatusCode.OK, paychecks);
+    }
+
+
+    [Fact]
+    public async Task WhenAskedForEmployeesPaychecks_ShouldReturn404()
+    {
+        var response = await HttpClient.GetAsync($"/api/v1/employees/{int.MinValue}/paychecks");
         await response.ShouldReturn(HttpStatusCode.NotFound);
     }
 }
