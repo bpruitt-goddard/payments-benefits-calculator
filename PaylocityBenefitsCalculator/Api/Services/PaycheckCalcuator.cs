@@ -8,12 +8,16 @@ public static class PaycheckCalculator
 {
 	private const int PaychecksPerYear = 26;
 	private const decimal YearlyBenefitsBaseCost = 12_000m;
+	private const decimal YearlyDependentCost = 7_200m;
+
 	// Return a years worth of paychecks
 	public static List<Paycheck> GetPaychecks(Employee employee)
 	{
 		// calculate total deductions
 		var deductions = YearlyBenefitsBaseCost;
+		deductions += employee.Dependents.Count * YearlyDependentCost;
 
+		Console.WriteLine($"deductions {deductions}");
 
 		var yearlyTotal = employee.Salary - deductions;
 		return SplitEvenly(yearlyTotal);
