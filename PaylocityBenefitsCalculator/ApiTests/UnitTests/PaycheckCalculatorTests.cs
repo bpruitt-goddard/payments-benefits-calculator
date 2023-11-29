@@ -14,13 +14,14 @@ public class PaycheckCalculatorTests
 		var employee = new Employee
 		{
 			Salary = 50_000.00m,
-			DateOfBirth = DateTime.UtcNow.AddYears(-30)
+			DateOfBirth = DateTime.UtcNow.AddYears(-30),
 		};
 
 		var paychecks = PaycheckCalculator.GetPaychecks(employee);
 
 		Assert.Equal(26, paychecks.Count);
-		Assert.All(paychecks.Take(25), paycheck => Assert.Equal(1923.07m, paycheck.Amount));
-		Assert.Equal(1923.25m, paychecks.Last().Amount);
+		Assert.All(paychecks.Take(25), paycheck => Assert.Equal(1461.53m, paycheck.Amount));
+		Assert.Equal(1461.75m, paychecks.Last().Amount);
+		Assert.Equal(38_000m, paychecks.Sum(p => p.Amount));
 	}
 }

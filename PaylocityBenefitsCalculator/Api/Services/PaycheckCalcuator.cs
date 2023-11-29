@@ -7,11 +7,13 @@ namespace Api.Services;
 public static class PaycheckCalculator
 {
 	private const int PaychecksPerYear = 26;
+	private const decimal YearlyBenefitsBaseCost = 12_000m;
 	// Return a years worth of paychecks
 	public static List<Paycheck> GetPaychecks(Employee employee)
 	{
 		// calculate total deductions
-		var deductions = 0m;
+		var deductions = YearlyBenefitsBaseCost;
+
 
 		var yearlyTotal = employee.Salary - deductions;
 		return SplitEvenly(yearlyTotal);
