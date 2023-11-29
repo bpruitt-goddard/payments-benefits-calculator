@@ -68,7 +68,6 @@ public class DependentIntegrationTests : IntegrationTest
     }
 
     [Fact]
-    //task: make test pass
     public async Task WhenAskedForANonexistentDependent_ShouldReturn404()
     {
         var response = await HttpClient.GetAsync($"/api/v1/dependents/{int.MinValue}");
