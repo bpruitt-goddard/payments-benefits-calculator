@@ -33,6 +33,9 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// Seed database
+app.SeedSqlServer();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
