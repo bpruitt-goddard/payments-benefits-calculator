@@ -1,8 +1,8 @@
 package api
 
 import (
-	"encoding/json"
 	"example/server/storage"
+	"example/server/utils"
 	"net/http"
 )
 
@@ -26,6 +26,5 @@ func (s *Server)Start() error {
 func (s *Server) handleGetUserById(w http.ResponseWriter, r *http.Request) {
 	user := s.store.Get(10)
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(user)
+	utils.WriteJson(w, user)
 }
