@@ -13,14 +13,32 @@ func TestGetPayChecks(t *testing.T) {
 		input           types.Employee
 		expectedFirst25 int
 		expectedLast    int
-	} {
+	}{
 		"employee with no extra deductions": {
 			input: types.Employee{
-				Salary:      5000000,
+				Salary:      50_000_00,
 				DateOfBirth: time.Now().AddDate(-30, 0, 0),
 			},
-			expectedFirst25: 146153,
-			expectedLast:    146175,
+			expectedFirst25: 1_461_53,
+			expectedLast:    1_461_75,
+		},
+		"employee with one dependent": {
+			input: types.Employee{
+				Salary:      50_000_00,
+				DateOfBirth: time.Now().AddDate(-30, 0, 0),
+				Dependents:  []types.Dependent{{}},
+			},
+			expectedFirst25: 1_184_61,
+			expectedLast:    1_184_75,
+		},
+		"employee with two dependents": {
+			input: types.Employee{
+				Salary:      50_000_00,
+				DateOfBirth: time.Now().AddDate(-30, 0, 0),
+				Dependents:  []types.Dependent{{},{}},
+			},
+			expectedFirst25: 907_69,
+			expectedLast:    907_75,
 		},
 	}
 
@@ -33,10 +51,10 @@ func TestGetPayChecks(t *testing.T) {
 	}
 }
 
-func repeatedSlice(value, n int) []types.Paycheck{
+func repeatedSlice(value, n int) []types.Paycheck {
 	arr := make([]types.Paycheck, n)
 	for i := 0; i < n; i++ {
-		arr[i] = types.Paycheck{ Amount: value}
+		arr[i] = types.Paycheck{Amount: value}
 	}
 	return arr
 }
